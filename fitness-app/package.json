@@ -1,0 +1,28 @@
+{
+  "name": "fitness-app",
+  "version": "1.0.0",
+  "description": "Fitness tracker app",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArtemTenkov/fitness-app.git"
+  },
+  "keywords": [
+    "reactjs",
+    "redux",
+    "tdd",
+    "graphql"
+  ],
+  "author": "Artem Tenkov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArtemTenkov/fitness-app/issues"
+  },
+  "homepage": "https://github.com/ArtemTenkov/fitness-app#readme",
+  "devDependencies": {
+    "jest": "^25.2.7"
+  }
+}
