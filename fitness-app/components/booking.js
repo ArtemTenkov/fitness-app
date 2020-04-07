@@ -1,3 +1,5 @@
 import React from 'react';
 
-export const Booking = () => <div>Artem</div>
+export const Booking = ({user}) => (
+    <div>{user.firstName}</div>
+);
