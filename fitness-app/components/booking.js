@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export const Booking = ({trainer}) => (
-    trainer?
-    <div>{trainer.firstName}</div>
-    : <div></div>
-);
+export const Booking = ({trainer}) => {
+    
+    return (
+        trainer?
+        <div>{trainer.firstName}</div>
+        : <div></div>
+    );
+} 
 
 const workoutTimeFormat = (time) => {
     const [h, m] = new Date(time).toTimeString().split(':');
@@ -12,17 +15,23 @@ const workoutTimeFormat = (time) => {
 };
 
 export const WorkoutScheduleView = ({workouts}) =>{
+  const [selectedWorkout, setSelectedWorkout] = useState(0);
+
   return  (<div id="container">        
              <ol id="schedule_view">
-             {workouts.map(workout => 
-                             <li key={workout.startsAt}>{workoutTimeFormat(workout.startsAt)}</li>
+             {workouts.map((workout, i) => 
+                             <li key={workout.startsAt}>
+                                <button type="button" onClick={() => setSelectedWorkout(i)}>
+                                    {workoutTimeFormat(workout.startsAt)}
+                                </button>
+                             </li>
              )}
             </ol>
                 {
                     workouts.length < 1?
                 (<p>Nothing planned for today</p>)
                 :
-                (<Booking {...workouts[0]} />                )
+                (<Booking {...workouts[selectedWorkout]} />                )
             }
         
     </div>)
