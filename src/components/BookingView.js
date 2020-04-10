@@ -4,7 +4,13 @@ export const Booking = ({trainer}) => {
     
     return (
         trainer?
-        <div>{trainer.firstName}</div>
+        <div>
+            <div className="danger">{trainer.firstName}</div>
+            <div>{trainer.lastName}</div>
+            <div>{trainer.phoneNumber}</div>
+            <div>{trainer.lastName}</div>
+        </div>
+        
         : <div></div>
     );
 } 

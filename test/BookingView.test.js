@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import  { Booking, WorkoutScheduleView } from '../src/components/booking.js';
+import  { Booking, WorkoutScheduleView } from '../src/components/BookingView.js';
 import ReactTestUtils from 'react-dom/test-utils';
 
 //NB! Never refactor red tests!
