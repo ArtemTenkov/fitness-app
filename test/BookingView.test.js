@@ -70,13 +70,13 @@ describe('Workouts schedule view', () => {
             expect(container.textContent).toMatch('Oleg')
         })
 
-    it('Renders an ol with a right id', () => {
+    it('Renders an ul with a right id', () => {
         //Act
         render(<WorkoutScheduleView 
             workouts={ workouts } />);
 
         //Assert
-        expect(container.querySelector('ol#schedule_view')).not.toBeNull();
+        expect(container.querySelector('ul#schedule_view')).not.toBeNull();
     })
 
     it('Renders multiple bookings in ol list', ()=> {
@@ -84,7 +84,7 @@ describe('Workouts schedule view', () => {
         render(<WorkoutScheduleView workouts={workouts} />);
 
         //Assert
-        expect(container.querySelector('ol').children)
+        expect(container.querySelector('ul').children)
             .toHaveLength(2);
     })    
 

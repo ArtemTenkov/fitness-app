@@ -44,7 +44,7 @@ export const WorkoutScheduleView = ({workouts}) =>{
                     <div className="col-md-3">
                     <ul id="schedule_view">
                         {workouts.map((workout, i) => 
-                             <li class="list-group-item" key={workout.startsAt}>
+                             <li className="list-group-item" key={workout.startsAt}>
                                 <button type="button" className="btn btn-secondary" 
                                  onClick={() => setSelectedWorkout(i)}>
                                     {workoutTimeFormat(workout.startsAt)}
