@@ -1,6 +1,7 @@
 import React from 'react';
 import { createContainer } from './domManipulators';
 import { BookingForm } from '../src/components/BookingForm';
+import ReactUtils from 'react-dom/test-utils';
 
 describe('Booking Form', () => {
     let render, container;
@@ -9,7 +10,9 @@ describe('Booking Form', () => {
         ({render, container} = createContainer());
     })
 
-    const form = id => container.querySelector(`form[id="${id}"]`);
+    const getBookingForm = () => container.querySelector(`form[id="bookingForm"]`);
+    const getFirstNameField = () => getBookingForm().elements.firstName;
+
     const expectToBeInputOfTypeText = inputElement => {
         expect(inputElement).not.toBeNull();
         expect(inputElement.type).toEqual('text');
@@ -20,7 +23,7 @@ describe('Booking Form', () => {
         render(<BookingForm  />)
 
         //Aseert
-        expect(form('bookingForm')).not.toBeNull();
+        expect(getBookingForm()).not.toBeNull();
     })
 
     it('Renders the first name field as a text box', () => {
@@ -28,8 +31,7 @@ describe('Booking Form', () => {
         render(<BookingForm />);
 
         //Assert
-        const firstNameField = form('bookingForm').elements.firstName;
-        expectToBeInputOfTypeText(firstNameField);
+        expectToBeInputOfTypeText(getFirstNameField());
     });
 
     it('Includes existing value as a first name', () => {
@@ -40,8 +42,53 @@ describe('Booking Form', () => {
         render(<BookingForm firstName={expectedName} />);
 
         //Assert
-        const firstNameField = form('bookingForm').elements.firstName;
-        expect(firstNameField.value).toEqual(expectedName);
+        expect(getFirstNameField().value).toEqual(expectedName);
+    })
+
+    const labelFor = formElement => container.querySelector(`label[for="${formElement}"]`);
+    it('Renders a label for a first name field', () => {
+        //Act 
+        render(<BookingForm />)
+
+        //Assert
+        expect(labelFor('firstName')).not.toBeNull();
+    })
+
+    it('Assigns id that matches label id to the firstName field', () => {
+        //Act
+        render(<BookingForm />);
+
+        //Assert
+        expect(getFirstNameField().id).toEqual('firstName');
+    });
+
+    it('Saves existing first name when submitted', async () => {
+        //Arrange 
+        const expectedName = 'Artem';
+
+        //Act & assert
+        render(<BookingForm firstName={expectedName} onSubmit={({firstName}) => {
+            expect(firstName).toEqual(expectedName)
+        }} />)
+
+        await ReactUtils.Simulate.submit(getBookingForm());
+
+        expect.hasAssertions();
+    })
+
+    it('Saves new first name when submitted', async () => {
+        //Arrange 
+        const expectedName = 'Artem';
+
+        //Act & assert
+        render(<BookingForm firstName={expectedName} onSubmit={() =>({firstName}) => {
+            expect(firstName).toEqual(expectedName)
+        }} />)
+
+        await ReactUtils.Simulate.change(getFirstNameField(), {
+            target: { value: expectedName }
+        })
+        await ReactUtils.Simulate.submit(getBookingForm());
     })
 
 });
