@@ -23,6 +23,11 @@ describe('Booking Form', () => {
         expect(getBookingForm()).not.toBeNull();
     })
 
+    it('Has a submit button', () => {
+        render(<BookingForm />);
+        expect(container.querySelector('input[type=submit]')).not.toBeNull();
+    })
+
     const itRendersAsATextBox = (fieldName) =>  
         it('Renders as a text box', () => {
             render(<BookingForm />);
@@ -32,7 +37,7 @@ describe('Booking Form', () => {
     const itIncludesExistingValue = fieldName =>
         it('Includes existing value', () => {
             let expectedName = 'Somename';
-            render(<BookingForm firstName={expectedName} />);
+            render(<BookingForm {...{[fieldName]: expectedName}} />);
             expect(field(fieldName).value).toEqual(expectedName);
         })
 
@@ -70,7 +75,7 @@ describe('Booking Form', () => {
             }} />)
 
             await ReactUtils.Simulate.change(field(fieldName), {
-                target: { value: newValue }
+                target: { value: newValue, name: fieldName }
             })
             await ReactUtils.Simulate.submit(getBookingForm());
         })
@@ -84,4 +89,22 @@ describe('Booking Form', () => {
         itSavesWhenSubmitted('firstName');
         itSavesNewWhenSubmitted('firstName', 'New value');
     });
+
+    describe('last name field', () => {
+        itRendersAsATextBox('lastName');
+        itIncludesExistingValue('lastName');        
+        itRendersALabel('lastName', 'Last name');
+        itAssignsIdThatMatchesLabelId('lastName');        
+        itSavesWhenSubmitted('lastName');
+        itSavesNewWhenSubmitted('lastName', 'New value');
+    })
+
+    describe('phone number field', () => {
+        itRendersAsATextBox('phoneNumber');
+        itIncludesExistingValue('phoneNumber');        
+        itRendersALabel('phoneNumber', 'Phone number');
+        itAssignsIdThatMatchesLabelId('phoneNumber');        
+        itSavesWhenSubmitted('phoneNumber');
+        itSavesNewWhenSubmitted('phoneNumber', 'New value');
+    })
 });
