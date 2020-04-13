@@ -3,108 +3,93 @@ import { createContainer } from './domManipulators';
 import { BookingForm } from '../src/components/BookingForm';
 import ReactUtils from 'react-dom/test-utils';
 
-describe('Booking Form', () => {
-    let render, container;
+describe('Booking form', ()=>{
+    let container, render;
     
     beforeEach(() => {
         ({render, container} = createContainer());
     })
 
-    const getBookingForm = () => container.querySelector(`form[id="bookingForm"]`);
-    const field = name => getBookingForm().elements[name];
+    const selectorId = 'workoutTypes';
+    const form = id => container.querySelector(`form#${id}`);
+    const field = name => form('bookingForm').elements[name];
 
-    const expectToBeInputOfTypeText = inputElement => {
-        expect(inputElement).not.toBeNull();
-        expect(inputElement.type).toEqual('text');
-    }
-
-    it('Renders a form', () => {
-        render(<BookingForm  />)
-        expect(getBookingForm()).not.toBeNull();
-    })
-
-    it('Has a submit button', () => {
-        render(<BookingForm />);
-        expect(container.querySelector('input[type=submit]')).not.toBeNull();
-    })
-
-    const itRendersAsATextBox = (fieldName) =>  
-        it('Renders as a text box', () => {
-            render(<BookingForm />);
-            expectToBeInputOfTypeText(field(fieldName));
-        });
-
-    const itIncludesExistingValue = fieldName =>
-        it('Includes existing value', () => {
-            let expectedName = 'Somename';
-            render(<BookingForm {...{[fieldName]: expectedName}} />);
-            expect(field(fieldName).value).toEqual(expectedName);
-        })
-
-    const itRendersALabel = (fieldName, labelText) =>
-        it('Renders a label', () => {
-            const labelFor = formElement => container.querySelector(`label[for="${formElement}"]`);
-            render(<BookingForm />)
-            expect(labelFor(fieldName)).not.toBeNull();
-            expect(labelFor(fieldName).textContent).toEqual(labelText)
-        });
-
-    const itAssignsIdThatMatchesLabelId = fieldName =>
-        it('Assigns id that matches label id', () => {
-            render(<BookingForm />);
-            expect(field('firstName').id).toEqual('firstName');
-        });
-
-    const itSavesWhenSubmitted = (fieldName, expectedValue) =>
-        it('Saves when submitted', async () => {
-            const props = {[fieldName]: expectedValue };
-            render(<BookingForm { ...props} 
-                        onSubmit={({firstName}) => {
-                            expect(firstName).toEqual(expectedValue)    
-                        }} 
-                    />)
-            await ReactUtils.Simulate.submit(getBookingForm());    
-            expect.hasAssertions();
-        })
-    
-    const itSavesNewWhenSubmitted = (fieldName, newValue) =>
-        it('Saves new when submitted', async () => {
-            const initialValue = 'initial value';
-            render(<BookingForm firstName={initialValue} onSubmit={() =>({firstName}) => {
-                expect(firstName).toEqual(newValue)
-            }} />)
-
-            await ReactUtils.Simulate.change(field(fieldName), {
-                target: { value: newValue, name: fieldName }
-            })
-            await ReactUtils.Simulate.submit(getBookingForm());
-        })
-
-    
-    describe('first name field', () => {
-        itRendersAsATextBox('firstName');
-        itIncludesExistingValue('firstName');        
-        itRendersALabel('firstName', 'First name');
-        itAssignsIdThatMatchesLabelId('firstName');        
-        itSavesWhenSubmitted('firstName');
-        itSavesNewWhenSubmitted('firstName', 'New value');
+    it('Renders a form', ()=>{
+        render(<BookingForm />)
+        expect(form('bookingForm')).not.toBeNull();
     });
 
-    describe('last name field', () => {
-        itRendersAsATextBox('lastName');
-        itIncludesExistingValue('lastName');        
-        itRendersALabel('lastName', 'Last name');
-        itAssignsIdThatMatchesLabelId('lastName');        
-        itSavesWhenSubmitted('lastName');
-        itSavesNewWhenSubmitted('lastName', 'New value');
-    })
+    describe('Workout type field', ()=> {
+        const findOption = (dropdownNode, textContent) => {
+            let options = Array.from(dropdownNode.childNodes);
+            return options.find(o => o.textContent === textContent);
+        } 
 
-    describe('phone number field', () => {
-        itRendersAsATextBox('phoneNumber');
-        itIncludesExistingValue('phoneNumber');        
-        itRendersALabel('phoneNumber', 'Phone number');
-        itAssignsIdThatMatchesLabelId('phoneNumber');        
-        itSavesWhenSubmitted('phoneNumber');
-        itSavesNewWhenSubmitted('phoneNumber', 'New value');
+        it('Renders as a select box', ()=> {
+            render(<BookingForm />)
+            expect(field(selectorId)).not.toBeNull();
+            expect(field(selectorId).tagName).toEqual('SELECT');
+        });
+
+        it('Initially has blank value chosen', () => {
+            render(<BookingForm />)
+        })
+
+        it('Lists all workout types', () => {
+            const expectedWorkoutTypes = ['Body pump', 'HIIT', 'Muai Thai', 'Zumba'];
+            render(<BookingForm workoutTypes={expectedWorkoutTypes} />);
+            const optionNodes = Array.from(field(selectorId).childNodes);
+            const renderedWorkoutTypes = optionNodes.map(node => node.textContent);
+            expect(renderedWorkoutTypes).toEqual(
+                expect.arrayContaining(expectedWorkoutTypes)
+            )
+        })
+
+        it('Pre-selects the existing value', ()=> {
+            const expectedWorkoutTypes = ['Body pump', 'HIIT', 'Muai Thai', 'Zumba'];
+            render(<BookingForm workoutTypes={expectedWorkoutTypes} selectedWorkout="HIIT" />)
+            const option = findOption(field(selectorId), 'HIIT');
+            expect(option.selected).toBeTruthy();
+        })
+
+        it('Renders a label', ()=> {
+            const labelFor = id => container.querySelector(`label[for=${id}]`);
+            render(<BookingForm />);
+            expect(labelFor(selectorId)).not.toBeNull();    
+            expect(labelFor(selectorId).textContent).toEqual('Workout type:')        
+        })
+
+        it('Assigns select id that matches label for', ()=> {
+            render(<BookingForm />)
+            expect(field(selectorId).id).toEqual(selectorId)
+        })
+
+        it('Saves existing value when submitted', async ()=> {
+            const expectedValue = 'HIIT';
+            render(<BookingForm workoutTypes={['HIIT', 'BodyPump']} 
+            selectedWorkout={expectedValue}
+            onSubmit={({ selectedWorkout }) => {
+                expect(selectedWorkout).toEqual(expectedValue);
+            }} />)
+
+            ReactUtils.Simulate.submit(form('bookingForm'));
+            expect.hasAssertions();
+        })
+
+        it('Saves new value when submitted', async () => {
+            const initialValue = 'BodyPump';
+            const expectedValue = 'HIIT';
+            render(<BookingForm workoutTypes={['HIIT', 'BodyPump']} 
+            selectedWorkout={initialValue}
+            onSubmit={({ selectedWorkout }) => {
+                expect(selectedWorkout).toEqual(expectedValue);
+            }} />)
+
+            ReactUtils.Simulate.change(field(selectorId), {
+               target: { value: expectedValue }
+            })
+            ReactUtils.Simulate.submit(form('bookingForm'));
+        })
     })
+    
 });

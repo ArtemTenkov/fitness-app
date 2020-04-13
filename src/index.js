@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { WorkoutScheduleView } from './components/BookingView';
 import { sampleWorkouts } from './sampleData';
 import './scss/app.scss';
-import { BookingForm } from './components/BookingForm';
+import { UserForm } from './components/UserForm';
 
 ReactDOM.render(
-  <BookingForm firstName="Artem" lastName="Tenkov" phoneNumber="0000" />,
+  <UserForm firstName="Artem" lastName="Tenkov" phoneNumber="0000" />,
   document.getElementById('root')
 );
