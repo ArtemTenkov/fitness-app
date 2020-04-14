@@ -6,12 +6,12 @@ import ReactTestUtils from 'react-dom/test-utils';
 //NB! Never refactor red tests!
 
 describe('Booking page', () => {
-    let container;
+    let root;
     beforeEach(() => {
-        container = document.createElement('div');
+        root = document.createElement('div');
     });
 
-    const render = (component) => ReactDOM.render(component, container);     
+    const render = (component) => ReactDOM.render(component, root);     
 
 
     it('Renders trainers\'s first name', ()=> {
@@ -22,7 +22,7 @@ describe('Booking page', () => {
         render(<Booking trainer={trainer} />);
 
         //Assert
-        expect(container.textContent).toMatch('Artem');
+        expect(root.textContent).toMatch('Artem');
     });
 
     it('Renders first name of another trainer', ()=> {
@@ -33,7 +33,7 @@ describe('Booking page', () => {
         render(<Booking trainer={trainer} />);
 
         //Assert
-        expect(container.textContent).toMatch('Pavel');
+        expect(root.textContent).toMatch('Pavel');
     });
 })
 

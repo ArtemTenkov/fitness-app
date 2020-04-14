@@ -1,17 +1,17 @@
 import React from 'react';
-import { createContainer } from './domManipulators';
+import { setupContainer } from './testHelpers';
 import { BookingForm } from '../src/components/BookingForm';
 import ReactUtils from 'react-dom/test-utils';
 
-describe('Booking form', ()=>{
-    let container, render;
+describe('Workout booking form', ()=>{
+    let root, render;
     
     beforeEach(() => {
-        ({render, container} = createContainer());
+        ({render, root} = setupContainer());
     })
 
     const selectorId = 'workoutTypes';
-    const form = id => container.querySelector(`form#${id}`);
+    const form = id => root.querySelector(`form#${id}`);
     const field = name => form('bookingForm').elements[name];
 
     it('Renders a form', ()=>{
@@ -31,7 +31,7 @@ describe('Booking form', ()=>{
             expect(field(selectorId).tagName).toEqual('SELECT');
         });
 
-        it('Initially has blank value chosen', () => {
+        it('Initially has empty value chosen', () => {
             render(<BookingForm />)
         })
 
@@ -53,7 +53,7 @@ describe('Booking form', ()=>{
         })
 
         it('Renders a label', ()=> {
-            const labelFor = id => container.querySelector(`label[for=${id}]`);
+            const labelFor = id => root.querySelector(`label[for=${id}]`);
             render(<BookingForm />);
             expect(labelFor(selectorId)).not.toBeNull();    
             expect(labelFor(selectorId).textContent).toEqual('Workout type:')        
@@ -89,6 +89,27 @@ describe('Booking form', ()=>{
                target: { value: expectedValue }
             })
             ReactUtils.Simulate.submit(form('bookingForm'));
+        })
+    })
+
+    describe('Workout booking table', () => {
+        const getBookingSlotTable = () => root.querySelector('table#booking_slots');
+        
+        it('Redenders a table for booking slots', ()=> {
+            render(<BookingForm />);
+            expect(getBookingSlotTable()).not.toBeNull();
+        })
+
+        it('Renders a booking slot for every hour between open and closing times', () => {
+            const openingHour = 9;
+            const closingHour = 12;
+            const getTimesOfTheDay = () => root.querySelectorAll('th');
+
+            render(<BookingForm openingHour={openingHour} closingHour={closingHour} />)
+            expect(getTimesOfTheDay()).toHaveLength(3);
+            expect(getTimesOfTheDay()[0].textContent).toEqual('09:00');
+            expect(getTimesOfTheDay()[1].textContent).toEqual('10:00');
+            expect(getTimesOfTheDay()[2].textContent).toEqual('11:00');
         })
     })
     

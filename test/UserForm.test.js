@@ -1,16 +1,16 @@
 import React from 'react';
-import { createContainer } from './domManipulators';
+import { setupContainer } from './testHelpers';
 import { UserForm } from '../src/components/UserForm';
 import ReactUtils from 'react-dom/test-utils';
 
 describe('Booking Form', () => {
-    let render, container;
+    let render, root;
     
     beforeEach(() => {
-        ({render, container} = createContainer());
+        ({render, root} = setupContainer());
     })
 
-    const getBookingForm = () => container.querySelector(`form[id="bookingForm"]`);
+    const getBookingForm = () => root.querySelector(`form[id="bookingForm"]`);
     const field = name => getBookingForm().elements[name];
 
     const expectToBeInputOfTypeText = inputElement => {
@@ -25,7 +25,7 @@ describe('Booking Form', () => {
 
     it('Has a submit button', () => {
         render(<UserForm />);
-        expect(container.querySelector('input[type=submit]')).not.toBeNull();
+        expect(root.querySelector('input[type=submit]')).not.toBeNull();
     })
 
     const itRendersAsATextBox = (fieldName) =>  
@@ -43,7 +43,7 @@ describe('Booking Form', () => {
 
     const itRendersALabel = (fieldName, labelText) =>
         it('Renders a label', () => {
-            const labelFor = formElement => container.querySelector(`label[for="${formElement}"]`);
+            const labelFor = formElement => root.querySelector(`label[for="${formElement}"]`);
             render(<UserForm />)
             expect(labelFor(fieldName)).not.toBeNull();
             expect(labelFor(fieldName).textContent).toEqual(labelText)
