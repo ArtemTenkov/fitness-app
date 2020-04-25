@@ -103,13 +103,30 @@ describe('Workout booking form', ()=>{
         it('Renders a booking slot for every hour between open and closing times', () => {
             const openingHour = 9;
             const closingHour = 12;
-            const getTimesOfTheDay = () => root.querySelectorAll('th');
+            const getTimesOfTheDay = () => root.querySelectorAll('tbody th');
 
             render(<BookingForm openingHour={openingHour} closingHour={closingHour} />)
             expect(getTimesOfTheDay()).toHaveLength(3);
             expect(getTimesOfTheDay()[0].textContent).toEqual('09:00');
             expect(getTimesOfTheDay()[1].textContent).toEqual('10:00');
             expect(getTimesOfTheDay()[2].textContent).toEqual('11:00');
+        })
+
+        it('Renders an empty cell at the start of header row', () => {
+            render(<BookingForm />);
+            const headerRow = getBookingSlotTable().querySelector('thead > tr'); 
+            console.log(JSON.stringify(headerRow.firstChild.innerHTML))
+            expect(headerRow.firstChild.textContent).toEqual('')
+        })
+
+        it('Renders a week of available slots', () => {
+            const today = new Date(2020, 1, 1);
+            render(<BookingForm today={today} />)
+            const dates = getBookingSlotTable().querySelectorAll('thead th:not(:first-child)');
+            expect(dates).toHaveLength(7);
+            expect(dates[0].textContent).toEqual('Sat Feb')
+            expect(dates[1].textContent).toEqual('Sun Feb')
+            expect(dates[6].textContent).toEqual('Fri Feb')
         })
     })
     
