@@ -24,19 +24,21 @@ const toShortDate = timeStamp => {
     return `${day} ${dayOfMonth}`
 };
 
+const timeIncrements = (startTime, timeSlots, increment) => {
+    return Array(timeSlots)
+                .fill([startTime])
+                .reduce((acc, _, i) => acc.concat([startTime + (i * increment)]));
+}
+
 const dailyBookingSlots = (openingHour, closingHour) => {
    const slotsTotal = closingHour - openingHour;
    const startTime = new Date().setHours(openingHour, 0, 0, 0);
    const increment = 60 * 60 * 1000;
-   return Array(slotsTotal)
-        .fill([startTime])
-        .reduce((acc, _, i) => acc.concat([startTime + (i * increment)]));
+   return timeIncrements(startTime, slotsTotal, increment);
 }
 
 const weeklySlotValues = (startDate) => {
     const midnight = new Date(startDate).setHours(0, 0, 0, 0)
     const increment = 24 * 60 * 60 * 1000;
-    return Array(7)
-            .fill([midnight])
-            .reduce((acc, _, i) => acc.concat([midnight + (i * increment)]))
+    return timeIncrements(midnight, 7, increment)
 }
