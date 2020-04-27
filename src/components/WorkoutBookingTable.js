@@ -1,9 +1,10 @@
 import React from 'react';
 
-export const WorkoutBookingTable = ({openingHour, closingHour, today}) => {
+export const WorkoutBookingTable = ({openingHour, closingHour, today, availableTimeSlots}) => {
     const dates = weeklySlotValues(today); 
     const bookingSlots = dailyBookingSlots(openingHour, closingHour, today);
-    return <table className="table" id="booking_slots">       
+
+    return <table className="table mt-1" id="booking_slots">       
         <thead>
             <tr>
                 <th />
@@ -11,9 +12,30 @@ export const WorkoutBookingTable = ({openingHour, closingHour, today}) => {
             </tr>
         </thead>
         <tbody>
-            {bookingSlots.map(slot =><tr key={slot}><th>{toTimeValue(slot)}</th></tr>)}
+            {bookingSlots.map(slot =>
+            <tr key={slot}><th>{toTimeValue(slot)}</th>
+                {dates.map(date =>
+                <td key={date}>{ 
+                    availableTimeSlots.some(availableSlot => availableSlot.startsAt 
+                        === mergeDateAndTime(date, slot)) 
+                    ? <input type="radio"/> : null}
+                </td> )}
+            </tr>)}
         </tbody>
     </table>
+}
+
+WorkoutBookingTable.defaultProps = {
+    availableTimeSlots: []
+};
+
+const mergeDateAndTime = (dateTime, timeSlot) => {
+    const time = new Date(timeSlot);
+    return new Date(dateTime).setHours(
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds(),
+        time.getMilliseconds())
 }
 
 const toTimeValue = timeStamp => new Date(timeStamp).toTimeString().substring(0,5);

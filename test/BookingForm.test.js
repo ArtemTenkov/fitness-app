@@ -115,7 +115,6 @@ describe('Workout booking form', ()=>{
         it('Renders an empty cell at the start of header row', () => {
             render(<BookingForm />);
             const headerRow = getBookingSlotTable().querySelector('thead > tr'); 
-            console.log(JSON.stringify(headerRow.firstChild.innerHTML))
             expect(headerRow.firstChild.textContent).toEqual('')
         })
 
@@ -127,6 +126,29 @@ describe('Workout booking form', ()=>{
             expect(dates[0].textContent).toEqual('Sat Feb')
             expect(dates[1].textContent).toEqual('Sun Feb')
             expect(dates[6].textContent).toEqual('Fri Feb')
+        })
+
+        it('Renders a radio button for every time slot', () => {
+            const today = new Date();
+            const availableTimeSlots = [
+                { startsAt: today.setHours(9, 0, 0, 0) },
+                { startsAt: today.setHours(10, 0, 0, 0) },
+            ];
+            render(<BookingForm availableTimeSlots={availableTimeSlots} today={today} />)
+            const slotCells = getBookingSlotTable().querySelectorAll('td');
+            expect(slotCells[0].querySelector('input[type=radio]')).not.toBeNull();
+            expect(slotCells[7].querySelector('input[type=radio]')).not.toBeNull();
+        })
+
+        it('Does not renders radio buttons for unavailable time slots', () => {
+            render(<BookingForm availableTimeSlots={[]} />)
+            const appointmentSlots = getBookingSlotTable().querySelectorAll('input');
+            expect(appointmentSlots).toHaveLength(0);
+        })
+
+        it('Sets the radio button values to the index of corresponding time slot', () => {
+            const today = new Date();
+            
         })
     })
     
