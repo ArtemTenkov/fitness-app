@@ -1,6 +1,12 @@
 import React from 'react';
 
-export const WorkoutBookingTable = ({openingHour, closingHour, today, availableTimeSlots}) => {
+export const WorkoutBookingTable = ({
+    openingHour,
+    closingHour,
+    today,
+    availableTimeSlots,
+    handleChange,
+    chaeckedTimeSlot}) => {
     const dates = weeklySlotValues(today); 
     const bookingSlots = dailyBookingSlots(openingHour, closingHour, today);
 
@@ -15,14 +21,34 @@ export const WorkoutBookingTable = ({openingHour, closingHour, today, availableT
             {bookingSlots.map(slot =>
             <tr key={slot}><th>{toTimeValue(slot)}</th>
                 {dates.map(date =>
-                <td key={date}>{ 
-                    availableTimeSlots.some(availableSlot => availableSlot.startsAt 
-                        === mergeDateAndTime(date, slot)) 
-                    ? <input type="radio"/> : null}
+                <td key={date}> 
+                <RadioButtonIfAvailable
+                handleChange={handleChange}
+                availableTimeSlots={availableTimeSlots}
+                date={date}
+                timeSlot={slot}    
+                />
                 </td> )}
             </tr>)}
         </tbody>
     </table>
+}
+
+
+
+const RadioButtonIfAvailable = ({
+    availableTimeSlots,
+    date,
+    timeSlot,
+    checkedTimeSlot,
+    handleChange
+})=> {
+    const startsAt = mergeDateAndTime(date, timeSlot);
+    const isChecked = startsAt => startsAt === checkedTimeSlot; 
+    return availableTimeSlots.some(slot => slot.startsAt === startsAt) 
+            ? <input name="startsAt" type="radio" 
+                checked={isChecked} value={startsAt} onChange={handleChange} /> 
+            : null
 }
 
 WorkoutBookingTable.defaultProps = {

@@ -95,6 +95,9 @@ describe('Workout booking form', ()=>{
     describe('Workout booking table', () => {
         const getBookingSlotTable = () => root.querySelector('table#booking_slots');
         
+        const startsAtInput = index =>  
+            root.querySelectorAll('input[name=startsAt]')[index]
+
         it('Redenders a table for booking slots', ()=> {
             render(<BookingForm />);
             expect(getBookingSlotTable()).not.toBeNull();
@@ -148,8 +151,39 @@ describe('Workout booking form', ()=>{
 
         it('Sets the radio button values to the index of corresponding time slot', () => {
             const today = new Date();
-            
+            const availableTimeSlots = [
+                {startsAt: today.setHours(9, 0, 0, 0)},
+                {startsAt: today.setHours(10, 0, 0, 0)}
+            ];
+            render(<BookingForm availableTimeSlots={availableTimeSlots} today={today} />);
+            expect(startsAtInput(0).value)
+                .toEqual(availableTimeSlots[0].startsAt.toString())
+            expect(startsAtInput(1).value)
+                .toEqual(availableTimeSlots[1].startsAt.toString())
         })
+        
+            it('Shows new available value when submitted', () => {
+                expect.hasAssertions();
+                const today = new Date();
+                const availableTimeSlots = [
+                    {startsAt: today.setHours(9, 0, 0, 0)},
+                    {startsAt: today.setHours(10, 0, 0, 0)}
+                ];
+                render(<BookingForm 
+                    availableTimeSlots={availableTimeSlots}
+                    today={today}
+                    startsAt={availableTimeSlots[0].startsAt}
+                    onSubmit={({startsAt}) => {
+                        expect(startsAt).toEqual(availableTimeSlots[1].startsAt)
+                    }} />)
+                ReactUtils.Simulate.change(startsAtInput(1), {
+                    target: {
+                        value: availableTimeSlots[1].startsAt.toString(),
+                        name: 'startsAt'
+                    }
+                });
+                ReactUtils.Simulate.submit(form('bookingForm'))
+            })
     })
     
 });
