@@ -44,10 +44,15 @@ const RadioButtonIfAvailable = ({
     handleChange
 })=> {
     const startsAt = mergeDateAndTime(date, timeSlot);
-    const isChecked = startsAt => startsAt === checkedTimeSlot; 
+    const isChecked = startsAt === checkedTimeSlot; 
     return availableTimeSlots.some(slot => slot.startsAt === startsAt) 
-            ? <input name="startsAt" type="radio" 
-                checked={isChecked} value={startsAt} onChange={handleChange} /> 
+            ? <input 
+            name="startsAt" 
+            type="radio" 
+            checked={isChecked}
+            value={startsAt}
+            onChange={handleChange}
+             /> 
             : null
 }
 
