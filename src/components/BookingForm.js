@@ -24,7 +24,8 @@ import { WorkoutBookingTable } from './WorkoutBookingTable';
 
     return <form id="bookingForm" className="container form-group row mt-2 ml-1" onSubmit={() => onSubmit(workoutState)}>
     <label className="col-sm-2" htmlFor="workoutTypes">Workout type:</label>
-    <select className="form-control col-sm-10" name="workoutTypes" id="workoutTypes" value={selectedWorkout} onChange={handleChange}>
+    <select className="form-control col-sm-10" name="workoutTypes" id="workoutTypes" 
+    value={selectedWorkout} onChange={handleChange}>
         <option />
         {workoutTypes? workoutTypes.map((type, i) => <option key={i}>{type}</option>) : ''}
     </select>
@@ -32,9 +33,9 @@ import { WorkoutBookingTable } from './WorkoutBookingTable';
     chaeckedTimeSlot={workout.startsAt}
     availableTimeSlots={availableTimeSlots}
     closingHour={closingHour}
-
      handleChange={handleStartsAtChange}
       today={today} />
+      <input className="btn btn-primary" type="submit" value="Add" />
 </form>
 }
 
